@@ -47,10 +47,7 @@ in the same path as your settings file.
 		<artie> Hi, user. You said artie.
 		"""
 		def _respond(text):
-			irc.msg(
-				irc.target,
-				'Hi, %s. You said %s.' % (irc.message.nick, text)
-			)
+			irc.reply('Hi, %s. You said %s.' % (irc.message.nick, text))
 		
 		def _do_work(text):
 			sleep(1)

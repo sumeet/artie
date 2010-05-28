@@ -23,10 +23,7 @@ def _title(url):
 @trigger(r'(.*)')
 def title(irc, message):
 	def _message(title):
-		irc.msg(
-		    irc.message.target,
-		    '\002Link title:\002 %s' % title
-		)
+		irc.reply('\002Link title:\002 %s' % title)
 
 	for word in message.split(' '):
 		if word.startswith('http'):

@@ -53,6 +53,9 @@ class Artie(irc.IRCClient):
 				args = match.groups()
 				kwargs = match.groupdict()
 				func(self, *args, **kwargs)
+	
+	def reply(self, message):
+		return self.msg(self.message.target, message)
 
 class ArtieFactory(protocol.ClientFactory):
 	protocol = Artie
