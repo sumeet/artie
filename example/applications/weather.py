@@ -59,4 +59,3 @@ def weather(irc, query):
 		)	
 
 	work_then_callback(_weather, _message, work_args=[query,])
-
