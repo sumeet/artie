@@ -9,9 +9,9 @@ API_URL = \
 
 def _weather(query):
 	weather_url = API_URL % urlencode({'query': query})
-	s.go(weather_url)
-	current = s.doc.first('current_observation')
 	try:
+		s.go(weather_url)
+		current = s.doc.first('current_observation')
 		return {
 			'location': current.first('display_location').first('full').text,
 			'temperature': current.first('temperature_string').text,
