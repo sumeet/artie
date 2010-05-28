@@ -24,6 +24,12 @@ def _weather(query):
 
 @trigger(r'^.wz (.*)$')
 def weather(irc, query):
+	"""
+	Tells the weather. Example:
+
+	<user> .wz 45440
+	<artie> Weather for Dayton, OH: 83 F (28 C) Partly Cloudy
+	"""
 	def _message(weather):
 		if not weather:
 			irc.reply(
