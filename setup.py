@@ -8,5 +8,6 @@ setup(
 	author_email='sumeet.a@gmail.com',
 	description='IRC utility robot framework for Python',
 	packages=['artie',],
-	install_requires=['twisted', 'yaml',]
+	scripts=['bin/artie-run.py',],
+	install_requires=['twisted', 'pyyaml',]
 )
