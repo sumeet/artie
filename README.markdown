@@ -1,6 +1,6 @@
 # artie: IRC utility robot framework for Python
 
-*artie* is an IRC robot that's dead simple to extend. Perfect for accessing
+**artie** is an IRC robot that's dead simple to extend. Perfect for accessing
 Internet APIs or scraping webpages.
 
 ## Installation
