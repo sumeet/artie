@@ -6,6 +6,8 @@ import HTMLParser
 unescape = HTMLParser.HTMLParser().unescape
 
 def _title(url):
+	# I would've just used `scrape.py`, but it doesn't get Unicode stuff
+	# correct. Bummer.
 	content = urllib2.urlopen(
 		urllib2.Request(url, headers={"Accept" : "text/html"}),
 	).read(1024*1024)
