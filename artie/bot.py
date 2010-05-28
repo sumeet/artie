@@ -1,13 +1,11 @@
 from twisted.words.protocols import irc
 from twisted.internet import reactor, protocol
-from functools import wraps
 import re
 import sys
-
+reload(sys) # So we can get back `sys.setdefaultencoding`
 import settings
-from triggers import _triggers
+from applications import _triggers
 
-reload(sys)
 sys.setdefaultencoding('utf-8')
 
 _user_re = re.compile(r'(.*)!(.*)@(.*)')
@@ -25,6 +23,9 @@ class Message(object):
 
 class Artie(irc.IRCClient):
 	nickname = settings.NICK
+	username = settings.USERNAME
+	realname = settings.REALNAME
+	versionName = 'artie for Python'
 
 	message = None
 	
@@ -70,8 +71,4 @@ class ArtieFactory(protocol.ClientFactory):
 		reactor.stop()
 
 artie = ArtieFactory()
-		
-	
-if __name__ == '__main__':
-	reactor.connectTCP(settings.SERVER, settings.PORT, artie)
-	reactor.run()
+reactor.connectTCP(settings.SERVER, settings.PORT, artie)
