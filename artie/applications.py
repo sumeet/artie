@@ -6,7 +6,7 @@ import re
 
 triggers = []
 
-class BadTriggerError(Exception): pass
+class BadApplicationError(Exception): pass
 
 def trigger(expression):
 	def decorator(func):
@@ -18,7 +18,7 @@ sys.path.insert(0, settings.APPLICATION_PATH)
 for filename in os.listdir(settings.APPLICATION_PATH):
 	if filename != '__init__.py' and filename[-3:] == '.py':
 		if filename == 'triggers.py':
-			raise BadTriggerException(
+			raise BadApplicationException(
 				"Application file can't be called triggers.py"
 			)
 		module = filename[:-3]
