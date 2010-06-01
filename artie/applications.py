@@ -4,13 +4,19 @@ import os
 import sys
 import re
 
-triggers = []
+triggers = set()
+timers = set()
 
 class BadApplicationError(Exception): pass
 
 def trigger(expression):
 	def decorator(func):
-		triggers.append((re.compile(expression), func))
+		triggers.add((re.compile(expression), func))
+	return decorator
+
+def timer(time):
+	def decorator(func):
+		timers.add((time, func))
 	return decorator
 
 sys.path.insert(0, settings.APPLICATION_PATH)

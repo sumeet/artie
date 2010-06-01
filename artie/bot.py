@@ -32,6 +32,20 @@ class Artie(irc.IRCClient):
 
 	message = None
 	
+	def __init__(self):
+		self._reload_count = 0
+		self._load_timers()
+		self.channels = set()
+		
+		# SIGHUP handler to reload applications.
+		def _handle_signal(signum, frame):
+			self._reload_count += 1
+			log.msg('Received SIGHUP. Reloading applications.')
+			reload(applications)
+			self._load_timers()
+
+		signal.signal(signal.SIGHUP, _handle_signal)
+	
 	def signedOn(self):
 		for channel in settings.CHANNELS:
 			self.join(channel)
@@ -48,6 +62,15 @@ class Artie(irc.IRCClient):
 			self._trigger_match(user, channel, message)
 		except NotAPrivmsg:
 			return
+	
+	def joined(self, channel):
+		self.channels.add(channel)
+
+	def left(self, channel):
+		try:
+			self.channels.remove(channel)
+		except KeyError:
+			log.err('Left %s without knowing I was in there.' % channel)
 
 	def _trigger_match(self, user, channel, message):
 		for expression, func in applications.triggers:
@@ -56,6 +79,19 @@ class Artie(irc.IRCClient):
 				args = match.groups()
 				kwargs = match.groupdict()
 				func(self, *args, **kwargs)
+	
+	def _load_timers(self):
+		for time, func in applications.timers:
+			def _call_func():
+				func(self)
+
+			def _repeat_func(reload_count):
+				if reload_count == self._reload_count:
+					_call_func()
+					if (time,func) in applications.timers:
+						reactor.callLater(time, _repeat_func, reload_count)
+			
+			reactor.callLater(time, _repeat_func, self._reload_count)
 	
 	def reply(self, message):
 		return self.msg(self.message.target, message)
@@ -78,10 +114,3 @@ class ArtieFactory(protocol.ClientFactory):
 
 artie = ArtieFactory()
 reactor.connectTCP(settings.SERVER, settings.PORT, artie)
-
-# SIGHUP handler to reload applications.
-def _handle_signal(signum, frame):
-	log.msg('Received SIGHUP. Reloading applications.')
-	reload(applications)
-	
-signal.signal(signal.SIGHUP, _handle_signal)

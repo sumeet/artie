@@ -59,18 +59,24 @@ It's that easy. `work_then_callback` runs `_do_work` asynchronously and passes
 the return value to `_respond`. You'll want to use `work_then_callback` like
 this if you intend to use artie to access the Internet.
 
-For more examples, check out the
-[sample project](http://github.com/sumeet/artie/tree/master/example/).
+artie also makes it easy to do timed events:
 
-## TODO
-
-### Timers
-
-Events triggered by timers instead of message text. I was thinking of
-something like this:
+### hello_timer.py
 
 	from artie.applications import timer
 	
-	@timer(60*10) # every 10 minutes
-	def do_something(irc):
-		irc.msg('sumeet', 'just so you remember: artie rules!')
+	@timer(10)
+	def test(irc):
+		"""
+		Sends a message to every channel the bot is in every 10 seconds.
+		"""
+		for channel in irc.channels:
+			irc.msg(channel, 'hi i am artie')
+
+## Reloading applications
+
+If you've made changes to applications or added new ones, send artie a
+*SIGHUP* to reload your applications directory.
+
+For more examples, check out the
+[sample project](http://github.com/sumeet/artie/tree/master/example/).
