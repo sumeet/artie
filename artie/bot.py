@@ -1,10 +1,13 @@
 from twisted.words.protocols import irc
 from twisted.internet import reactor, protocol
+from twisted.python import log
+
 import re
 import sys
 reload(sys) # So we can get back `sys.setdefaultencoding`
 import settings
-from applications import _triggers
+import applications
+import signal
 
 sys.setdefaultencoding('utf-8')
 
@@ -47,7 +50,7 @@ class Artie(irc.IRCClient):
 			return
 
 	def _trigger_match(self, user, channel, message):
-		for expression, func in _triggers:
+		for expression, func in applications.triggers:
 			match = expression.match(message)
 			if match:
 				args = match.groups()
@@ -75,3 +78,10 @@ class ArtieFactory(protocol.ClientFactory):
 
 artie = ArtieFactory()
 reactor.connectTCP(settings.SERVER, settings.PORT, artie)
+
+# SIGHUP handler to reload applications.
+def _handle_signal(signum, frame):
+	log.msg('Received SIGHUP. Reloading applications.')
+	reload(applications)
+	
+signal.signal(signal.SIGHUP, _handle_signal)
