@@ -73,10 +73,10 @@ artie also makes it easy to do timed events:
 		for channel in irc.channels:
 			irc.msg(channel, 'hi i am artie')
 
+For more examples, check out the
+[sample project](http://github.com/sumeet/artie/tree/master/example/).
+
 ## Reloading applications
 
 If you've made changes to applications or added new ones, send artie a
 *SIGHUP* to reload your applications directory.
-
-For more examples, check out the
-[sample project](http://github.com/sumeet/artie/tree/master/example/).
