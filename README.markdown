@@ -5,8 +5,10 @@ Internet APIs or scraping webpages.
 
 ## Installation
 
-Get the source from [GitHub](http://github.com/sumeet/artie) and
-`python setup.py install`.
+To install, the latest release `pip install artie` or `easy_install artie`.
+
+For the bleeding edge, get the source from
+[GitHub](http://github.com/sumeet/artie) and `python setup.py install`.
 
 ## Getting started
 
