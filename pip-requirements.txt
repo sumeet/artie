@@ -1,0 +1,5 @@
+twisted
+pyyaml
+junitxml
+python-subunit
+
