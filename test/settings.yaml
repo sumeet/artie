@@ -4,4 +4,5 @@ REALNAME: real name
 SERVER: localhost
 PORT: 7890
 CHANNELS:
-  - '#artie'
+  - '#channel1'
+  - '#channel2'
