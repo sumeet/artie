@@ -1,0 +1,7 @@
+NICK: nick
+USERNAME: user
+REALNAME: real name
+SERVER: localhost
+PORT: 7890
+CHANNELS:
+  - '#artie'
