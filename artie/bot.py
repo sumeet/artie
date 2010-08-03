@@ -113,4 +113,3 @@ class ArtieFactory(protocol.ClientFactory):
 		reactor.stop()
 
 artie = ArtieFactory()
-reactor.connectTCP(settings.SERVER, settings.PORT, artie)

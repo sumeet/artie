@@ -4,9 +4,12 @@ import yaml
 
 DEFAULT_SETTINGS_FILENAME = 'settings.yaml'
 
-try:
-	settings_file = sys.argv[1]
-except IndexError:
+if sys.argv[0] == 'artie-run.py':
+	try:
+		settings_file = sys.argv[1]
+	except IndexError:
+		settings_file = DEFAULT_SETTINGS_FILENAME
+else:
 	settings_file = DEFAULT_SETTINGS_FILENAME
 
 try:	
