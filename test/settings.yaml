@@ -1,5 +1,5 @@
-NICK: nick
-USERNAME: user
+NICK: testnick
+USERNAME: testuser
 REALNAME: real name
 SERVER: localhost
 PORT: 7890
