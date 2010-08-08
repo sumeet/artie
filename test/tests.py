@@ -4,7 +4,6 @@ from twisted.internet import reactor, defer
 from twisted.trial import unittest
 from artie.bot import settings, ArtieFactory, _user_re
 from Queue import Queue
-import time
 
 class TestServer(irc.IRC):
 	username = None
