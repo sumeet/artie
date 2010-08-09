@@ -92,6 +92,9 @@ class BaseTest(unittest.TestCase):
 	def assertSaid(self, nick, target, message):
 		self.assertTrue((nick, target, message) in self.server.sent_messages)
 
+	def assertNotSaid(self, nick, target, message):
+		self.assertFalse((nick, target, message) in self.server.sent_messages)
+
 	def msg(self, target, message):
 		"""
 		Send a `message` to `target` from 'tests'.
@@ -135,8 +138,7 @@ class TestApplicationReloading(BaseTest):
 
 	def additional_set_up(self):
 		os.rename(self._off_file, self._on_file)
-		sighup_handler = signal.getsignal(signal.SIGHUP)
-		sighup_handler(signal.SIGHUP, None)
+		signal.getsignal(signal.SIGHUP)(signal.SIGHUP, None)
 		self.msg('#channel1', '.sighup test')
 
 	def test_reloaded_application(self):
@@ -144,7 +146,17 @@ class TestApplicationReloading(BaseTest):
 
 	def tearDown(self):
 		os.rename(self._on_file, self._off_file)
+		signal.getsignal(signal.SIGHUP)(signal.SIGHUP, None)
 		BaseTest.tearDown(self)
+
+class TestDisabledApplications(BaseTest):
+	artie_factory = TestArtieFactory
+
+	def additional_set_up(self):
+		self.msg('#channel1', '.sighup test')
+
+	def test_disabled_application(self):
+		self.assertNotSaid('testnick', '#channel1', 'SIGHUP test')
 
 if __name__ == '__main__':
 	print 'Run with `trial tests`.'
