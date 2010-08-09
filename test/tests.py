@@ -97,7 +97,7 @@ class BaseTest(unittest.TestCase):
 
 	def msg(self, target, message):
 		"""
-		Send a `message` to `target` from 'tests'.
+		Send a `message` to `target` from 'tests!tests@tes.t'.
 		"""
 		self.server.message_queue.put(('tests!tests@tes.t', target, message))
 
