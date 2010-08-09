@@ -4,6 +4,8 @@ from twisted.internet import reactor, defer
 from twisted.trial import unittest
 from artie.bot import settings, ArtieFactory, _user_re
 from Queue import Queue
+import signal
+import os
 
 class TestServer(irc.IRC):
 	username = None
@@ -89,7 +91,7 @@ class BaseTest(unittest.TestCase):
 
 	def assertSaid(self, nick, target, message):
 		self.assertTrue((nick, target, message) in self.server.sent_messages)
-	
+
 	def msg(self, target, message):
 		"""
 		Send a `message` to `target` from 'tests'.
@@ -125,6 +127,24 @@ class TestApplication(BaseTest):
 
 	def test_simple_application(self):
 		self.assertSaid('testnick', '#channel1', 'hi test123 x')
+
+class TestApplicationReloading(BaseTest):
+	artie_factory = TestArtieFactory
+	_off_file = os.path.join(settings.APPLICATION_PATH, 'sighup.py.off')
+	_on_file = os.path.join(settings.APPLICATION_PATH, 'sighup.py')
+
+	def additional_set_up(self):
+		os.rename(self._off_file, self._on_file)
+		sighup_handler = signal.getsignal(signal.SIGHUP)
+		sighup_handler(signal.SIGHUP, None)
+		self.msg('#channel1', '.sighup test')
+
+	def test_reloaded_application(self):
+		self.assertSaid('testnick', '#channel1', 'SIGHUP test')
+
+	def tearDown(self):
+		os.rename(self._on_file, self._off_file)
+		BaseTest.tearDown(self)
 
 if __name__ == '__main__':
 	print 'Run with `trial tests`.'
