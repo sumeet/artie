@@ -89,10 +89,10 @@ class BaseTest(unittest.TestCase):
 		stopped = defer.maybeDeferred(self.server_port.stopListening)
 		return defer.gatherResults([self.server_disconnected, stopped,])
 
-	def assertSaid(self, nick, target, message):
+	def assert_said(self, nick, target, message):
 		self.assertTrue((nick, target, message) in self.server.sent_messages)
 
-	def assertNotSaid(self, nick, target, message):
+	def assert_not_said(self, nick, target, message):
 		self.assertFalse((nick, target, message) in self.server.sent_messages)
 
 	def msg(self, target, message):
@@ -129,7 +129,7 @@ class TestApplication(BaseTest):
 		self.msg('#channel1', '.hello test123 x')
 
 	def test_simple_application(self):
-		self.assertSaid('testnick', '#channel1', 'hi test123 x')
+		self.assert_said('testnick', '#channel1', 'hi test123 x')
 
 class TestApplicationReloading(BaseTest):
 	artie_factory = TestArtieFactory
@@ -142,7 +142,7 @@ class TestApplicationReloading(BaseTest):
 		self.msg('#channel1', '.sighup test')
 
 	def test_reloaded_application(self):
-		self.assertSaid('testnick', '#channel1', 'SIGHUP test')
+		self.assert_said('testnick', '#channel1', 'SIGHUP test')
 
 	def tearDown(self):
 		os.rename(self._on_file, self._off_file)
@@ -156,7 +156,7 @@ class TestDisabledApplications(BaseTest):
 		self.msg('#channel1', '.sighup test')
 
 	def test_disabled_application(self):
-		self.assertNotSaid('testnick', '#channel1', 'SIGHUP test')
+		self.assert_not_said('testnick', '#channel1', 'SIGHUP test')
 
 if __name__ == '__main__':
 	print 'Run with `trial tests`.'
