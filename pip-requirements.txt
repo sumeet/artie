@@ -2,4 +2,4 @@ twisted
 pyyaml
 junitxml
 python-subunit
-
+setuptools_trial

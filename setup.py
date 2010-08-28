@@ -11,6 +11,7 @@ setup(
 	packages=['artie',],
 	scripts=['bin/artie-run.py',],
 	install_requires=['twisted', 'pyyaml',],
+	setup_requires=['setuptools_trial',],
 	classifiers=[
 		'Development Status :: 3 - Alpha',
 		'Environment :: No Input/Output (Daemon)',

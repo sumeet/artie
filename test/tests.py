@@ -1,13 +1,17 @@
+import os
+from Queue import Queue
+import signal
+
+# Make sure the tests are run from the right directory.
+if os.path.basename(os.getcwd()) != 'test':
+	os.chdir('test')
+
 from twisted.internet import reactor, defer
 from twisted.internet.protocol import Factory
 from twisted.trial import unittest
 from twisted.words.protocols import irc
 
 from artie.bot import _user_re, ArtieFactory, settings
-
-import os
-from Queue import Queue
-import signal
 
 class TestServer(irc.IRC):
 	username = None
