@@ -1,8 +1,8 @@
-import settings
-
 import os
-import sys
 import re
+import sys
+
+import settings
 
 triggers = set()
 timers = set()
@@ -32,4 +32,3 @@ for filename in os.listdir(settings.APPLICATION_PATH):
 			reload(sys.modules[module])
 		else:
 			__import__(module, locals(), globals())
-

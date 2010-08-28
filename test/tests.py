@@ -1,11 +1,13 @@
-from twisted.words.protocols import irc
-from twisted.internet.protocol import Factory
 from twisted.internet import reactor, defer
+from twisted.internet.protocol import Factory
 from twisted.trial import unittest
-from artie.bot import settings, ArtieFactory, _user_re
+from twisted.words.protocols import irc
+
+from artie.bot import _user_re, ArtieFactory, settings
+
+import os
 from Queue import Queue
 import signal
-import os
 
 class TestServer(irc.IRC):
 	username = None
@@ -60,6 +62,13 @@ class TestServer(irc.IRC):
 		self.factory.message_queue.put('end')
 		self.factory.on_connection_lost.callback(self)
 
+class TestArtieFactory(ArtieFactory):
+	"""
+	Doesn't reconnect when connection is dropped.
+	"""
+	def clientConnectionLost(self, *args):
+		return
+
 class BaseTest(unittest.TestCase):
 	def setUp(self):
 		self.server = Factory()
@@ -74,7 +83,7 @@ class BaseTest(unittest.TestCase):
 		self.server.on_connection_lost = self.server_disconnected
 		self.server_port = reactor.listenTCP(7890, self.server)
 
-		self.artie = self.artie_factory()
+		self.artie = TestArtieFactory()
 		self.client_connection = reactor.connectTCP(
 			settings.SERVER, 7890, self.artie
 		)
@@ -101,16 +110,7 @@ class BaseTest(unittest.TestCase):
 		"""
 		self.server.message_queue.put(('tests!tests@tes.t', target, message))
 
-class TestArtieFactory(ArtieFactory):
-	"""
-	Doesn't reconnect when connection is dropped.
-	"""
-	def clientConnectionLost(self, *args):
-		return
-
 class TestConnection(BaseTest):
-	artie_factory = TestArtieFactory
-
 	def test_client_connected(self):
 		self.assertEqual(len(self.server.users), 1)
 		nick, user, _ = _user_re.match(list(self.server.users)[0]).groups()
@@ -123,8 +123,6 @@ class TestConnection(BaseTest):
 		self.assertTrue('#channel2' in self.server.channels)
 
 class TestApplication(BaseTest):
-	artie_factory = TestArtieFactory
-
 	def additional_set_up(self):
 		self.msg('#channel1', '.hello test123 x')
 
@@ -132,7 +130,6 @@ class TestApplication(BaseTest):
 		self.assert_said('testnick', '#channel1', 'hi test123 x')
 
 class TestApplicationReloading(BaseTest):
-	artie_factory = TestArtieFactory
 	_off_file = os.path.join(settings.APPLICATION_PATH, 'sighup.py.off')
 	_on_file = os.path.join(settings.APPLICATION_PATH, 'sighup.py')
 
@@ -150,8 +147,6 @@ class TestApplicationReloading(BaseTest):
 		BaseTest.tearDown(self)
 
 class TestDisabledApplications(BaseTest):
-	artie_factory = TestArtieFactory
-
 	def additional_set_up(self):
 		self.msg('#channel1', '.sighup test')
 

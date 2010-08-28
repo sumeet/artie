@@ -1,8 +1,9 @@
+from artie import VERSION
 from setuptools import setup
 
 setup(
 	name='artie',
-	version='0.1',
+	version=VERSION,
 	url='http://github.com/sumeet/artie',
 	author='Sumeet Agarwal',
 	author_email='sumeet.a@gmail.com',

@@ -1,10 +1,12 @@
-from twisted.words.protocols import irc
-from twisted.internet import reactor, protocol
-from twisted.python import log
-
 import re
 import sys
 reload(sys) # So we can get back `sys.setdefaultencoding`
+
+from twisted.internet import reactor, protocol
+from twisted.python import log
+from twisted.words.protocols import irc
+
+from __init__ import VERSION
 import settings
 import applications
 import signal
@@ -29,6 +31,8 @@ class Artie(irc.IRCClient):
 	username = settings.USERNAME
 	realname = settings.REALNAME
 	versionName = 'artie for Python'
+	versionNum = VERSION
+	versionEnv = sys.platform
 
 	message = None
 	
@@ -36,7 +40,7 @@ class Artie(irc.IRCClient):
 		self._reload_count = 0
 		self._load_timers()
 		self.channels = set()
-		
+
 		# SIGHUP handler to reload applications.
 		def _handle_signal(signum, frame):
 			self._reload_count += 1
@@ -62,7 +66,7 @@ class Artie(irc.IRCClient):
 			self._trigger_match(user, channel, message)
 		except NotAPrivmsg:
 			return
-	
+
 	def joined(self, channel):
 		self.channels.add(channel)
 
@@ -90,24 +94,24 @@ class Artie(irc.IRCClient):
 					_call_func()
 					if (time,func) in applications.timers:
 						reactor.callLater(time, _repeat_func, reload_count)
-			
+
 			reactor.callLater(time, _repeat_func, self._reload_count)
-	
+
 	def reply(self, message):
 		return self.msg(self.message.target, message)
 
 class ArtieFactory(protocol.ClientFactory):
 	protocol = Artie
-	
+
 	def __init__(self):
 		self.irc = self.protocol()
 
 	def buildProtocol(self, addr=None):
 		return self.irc
-	
+
 	def clientConnectionLost(self, connector, reason):
 		connector.connect()
-	
+
 	def clientConnectionFailed(self, connector, reason):
 		print 'Connection failed: %s' % reason
 		reactor.stop()
