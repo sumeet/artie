@@ -3,8 +3,9 @@ from Queue import Queue
 import signal
 
 # Make sure the tests are run from the right directory.
-if os.path.basename(os.getcwd()) != 'test':
-	os.chdir('test')
+_tests_directory = os.path.dirname(os.path.abspath(__file__))
+if os.getcwd() != _tests_directory:
+	os.chdir(_tests_directory)
 
 from twisted.internet import reactor, defer
 from twisted.internet.protocol import Factory

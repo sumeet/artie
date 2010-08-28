@@ -1,5 +1,6 @@
-from artie import VERSION
 from setuptools import setup
+
+from artie import VERSION
 
 setup(
 	name='artie',
