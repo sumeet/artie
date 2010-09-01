@@ -101,7 +101,7 @@ class BaseTest(unittest.TestCase):
 	def tearDown(self):
 		self.client_connection.disconnect()
 		stopped = defer.maybeDeferred(self.server_port.stopListening)
-		return defer.gatherResults([self.server_disconnected, stopped,])
+		return defer.gatherResults((self.server_disconnected, stopped,))
 
 	def assert_said(self, nick, target, message):
 		self.assertTrue((nick, target, message) in self.server.sent_messages)
