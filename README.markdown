@@ -55,7 +55,7 @@ in the same path as your settings file.
 			sleep(1)
 			return text
 		
-		work_then_callback(_do_work, _respond, work_args=[argument,])
+		work_then_callback(_do_work, _respond, work_args=(argument,))
 
 It's that easy. `work_then_callback` runs `_do_work` asynchronously and passes
 the return value to `_respond`. You'll want to use `work_then_callback` like
