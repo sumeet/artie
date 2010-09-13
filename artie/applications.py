@@ -22,7 +22,7 @@ def timer(time):
 sys.path.insert(0, settings.APPLICATION_PATH)
 
 for filename in os.listdir(settings.APPLICATION_PATH):
-    if filename != '__init__.py' and filename[-3:] == '.py':
+    if filename != '__init__.py' and filename.endswith('.py'):
         if filename == 'triggers.py':
             raise BadApplicationException(
                 "Application file can't be called triggers.py"
