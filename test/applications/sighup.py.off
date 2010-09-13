@@ -2,10 +2,10 @@ from artie.applications import trigger
 
 @trigger(r'^.sighup (.*)$')
 def hello(irc, argument):
-	"""
-	Responds back to the same channel like so:
-	
-	<user> .hello there
-	<artie> hi there
-	"""
-	irc.reply('SIGHUP ' + argument)
+    """
+    Responds back to the same channel like so:
+    
+    <user> .hello there
+    <artie> hi there
+    """
+    irc.reply('SIGHUP ' + argument)
