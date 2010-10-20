@@ -35,7 +35,7 @@ class Artie(irc.IRCClient):
     versionEnv = sys.platform
 
     message = None
-    
+
     def __init__(self):
         self._reload_count = 0
         self._load_timers()
@@ -49,17 +49,17 @@ class Artie(irc.IRCClient):
             self._load_timers()
 
         signal.signal(signal.SIGHUP, _handle_signal)
-    
+
     def signedOn(self):
         for channel in settings.CHANNELS:
             self.join(channel)
-    
+
     def kickedFrom(self, channel, kicker, message):
         """
         Rejoin a channel after getting kicked.
         """
         self.join(channel)
-    
+
     def privmsg(self, user, channel, message):
         try:
             self.message = Message(user, channel, message)
@@ -83,7 +83,7 @@ class Artie(irc.IRCClient):
                 args = match.groups()
                 kwargs = match.groupdict()
                 func(self, *args, **kwargs)
-    
+
     def _load_timers(self):
         for time, func in applications.timers:
             def _call_func():

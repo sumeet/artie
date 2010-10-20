@@ -37,24 +37,24 @@ in the same path as your settings file.
     from artie.applications import trigger
     from artie.helpers import work_then_callback
     from time import sleep
-    
+
     # Matched groups from the regular expression below get passed into the
     # decorated function.
     @trigger(r'^.hello (.*)$')
     def hello(irc, argument):
         """
         Responds back to the same channel like so:
-        
+
         <user> .hello artie
         <artie> Hi, user. You said artie.
         """
         def _respond(text):
             irc.reply('Hi, %s. You said %s.' % (irc.message.nick, text))
-        
+
         def _do_work(text):
             sleep(1)
             return text
-        
+
         work_then_callback(_do_work, _respond, work_args=(argument,))
 
 It's that easy. `work_then_callback` runs `_do_work` asynchronously and passes
@@ -66,7 +66,7 @@ artie also makes it easy to do timed events:
 ### hello_timer.py
 
     from artie.applications import timer
-    
+
     @timer(10)
     def test(irc):
         """
