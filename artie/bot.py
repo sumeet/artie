@@ -1,6 +1,7 @@
 import re
 import sys
 reload(sys) # So we can get back `sys.setdefaultencoding`
+import time
 
 from twisted.internet import reactor, protocol
 from twisted.python import log
@@ -21,10 +22,13 @@ class Message(object):
     def __init__(self, user, target, message):
         try:
             self.nick, self.user, self.host = _user_re.match(user).groups()
-            self.target = target
-            self.text = message
         except AttributeError:
+            # This happens when we get a server message. We're not interested
+            # in those.
             raise NotAPrivmsg()
+
+        self.target = target
+        self.text = message
 
 class Artie(irc.IRCClient):
     nickname = settings.NICK
@@ -47,7 +51,6 @@ class Artie(irc.IRCClient):
             log.msg('Received SIGHUP. Reloading applications.')
             reload(applications)
             self._load_timers()
-
         signal.signal(signal.SIGHUP, _handle_signal)
 
     def signedOn(self):
@@ -85,17 +88,17 @@ class Artie(irc.IRCClient):
                 func(self, *args, **kwargs)
 
     def _load_timers(self):
-        for time, func in applications.timers:
+        for timer_seconds, func in applications.timers:
             def _call_func():
                 func(self)
 
             def _repeat_func(reload_count):
                 if reload_count == self._reload_count:
                     _call_func()
-                    if (time,func) in applications.timers:
-                        reactor.callLater(time, _repeat_func, reload_count)
+                    if (timer_seconds, func) in applications.timers:
+                        reactor.callLater(timer_seconds, _repeat_func, reload_count)
 
-            reactor.callLater(time, _repeat_func, self._reload_count)
+            reactor.callLater(timer_seconds, _repeat_func, self._reload_count)
 
     def reply(self, message):
         return self.msg(self.message.target, message)
@@ -110,10 +113,12 @@ class ArtieFactory(protocol.ClientFactory):
         return self.irc
 
     def clientConnectionLost(self, connector, reason):
+        log.err('Connection lost. Reconnecting.')
         connector.connect()
 
     def clientConnectionFailed(self, connector, reason):
-        print 'Connection failed: %s' % reason
-        reactor.stop()
+        log.err('Connection failed. Reconnecting in 15 seconds.')
+        time.sleep(15)
+        connector.connect()
 
 artie = ArtieFactory()
