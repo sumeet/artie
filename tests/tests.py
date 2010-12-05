@@ -36,11 +36,11 @@ class TestServer(irc.IRC):
             self.username, _, _, self.realname = params
             self._set_nickuserhost()
             self.sendMessage('001')
-    
+
     def irc_NICK(self, prefix, params):
         self.nick = params[0]
         self._set_nickuserhost()
-    
+
     def irc_JOIN(self, prefix, params):
         channel = params[0]
         if channel not in self.factory.channels:
@@ -157,6 +157,3 @@ class TestDisabledApplications(BaseTest):
 
     def test_disabled_application(self):
         self.assert_not_said('testnick', '#channel1', 'SIGHUP test')
-
-if __name__ == '__main__':
-    print 'Run with `trial tests`.'
