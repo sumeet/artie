@@ -34,16 +34,16 @@ in the same path as your settings file.
 
 ### hello.py
 
+    import time
+
     from artie.applications import trigger
     from artie.helpers import work_then_callback
-    from time import sleep
 
     # Matched groups from the regular expression below get passed into the
     # decorated function.
     @trigger(r'^.hello (.*)$')
     def hello(irc, argument):
-        """
-        Responds back to the same channel like so:
+        """Say "hi."
 
         <user> .hello artie
         <artie> Hi, user. You said artie.
@@ -52,7 +52,7 @@ in the same path as your settings file.
             irc.reply('Hi, %s. You said %s.' % (irc.message.nick, text))
 
         def _do_work(text):
-            sleep(1)
+            time.sleep(1)
             return text
 
         work_then_callback(_do_work, _respond, work_args=(argument,))
@@ -69,9 +69,7 @@ artie also makes it easy to do timed events:
 
     @timer(10)
     def test(irc):
-        """
-        Sends a message to every channel the bot is in every 10 seconds.
-        """
+        """Send a message to every channel the bot is in every 10 seconds."""
         for channel in irc.channels:
             irc.msg(channel, 'hi i am artie')
 

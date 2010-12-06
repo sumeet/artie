@@ -1,4 +1,5 @@
 import re
+import signal
 import sys
 reload(sys) # So we can get back `sys.setdefaultencoding`
 import time
@@ -7,10 +8,9 @@ from twisted.internet import reactor, protocol
 from twisted.python import log
 from twisted.words.protocols import irc
 
-from __init__ import VERSION
-import settings
-import applications
-import signal
+from .__init__ import VERSION
+from . import settings
+from . import applications
 
 sys.setdefaultencoding('utf-8')
 

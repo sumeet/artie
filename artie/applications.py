@@ -2,7 +2,7 @@ import os
 import re
 import sys
 
-import settings
+from . import settings
 
 triggers = set()
 timers = set()

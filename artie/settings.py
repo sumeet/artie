@@ -12,7 +12,7 @@ if sys.argv[0] == 'artie-run.py':
 else:
     settings_file = DEFAULT_SETTINGS_FILENAME
 
-try:    
+try:
     settings = yaml.load(open(os.path.abspath(settings_file)))
 except IOError:
     print "Error: Settings file '%s' doesn't exist." % settings_file
@@ -26,4 +26,3 @@ if not settings.get('APPLICATION_PATH'):
     APPLICATION_PATH = os.path.join(settings_directory, 'applications')
 else:
     APPLICATION_PATH = os.path.dirname(APPLICATION_PATH)
-
